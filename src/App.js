@@ -2,8 +2,14 @@ import './App.css';
 import Graph from "react-graph-vis";
 import React, { useState } from "react";
 
+
+// `text-davinci-003` deprecated on Jan 4 2024
+// https://stackoverflow.com/questions/78504532/openai-api-error-how-do-i-fix-error-404-when-i-connect-whatsapp-chatbot-to-open
+// model list
+// https://platform.openai.com/docs/models
+// https://community.openai.com/t/models-supported-by-completion-api/363298
 const DEFAULT_PARAMS = {
-  "model": "text-davinci-003",
+  "model": 'gpt-4o-mini',
   "temperature": 0.3,
   "max_tokens": 800,
   "top_p": 1,

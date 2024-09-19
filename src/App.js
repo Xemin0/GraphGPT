@@ -2,14 +2,28 @@ import './App.css';
 import Graph from "react-graph-vis";
 import React, { useState } from "react";
 
+// model list compatible with endpoints
+// https://platform.openai.com/docs/models/model-endpoint-compatibility
 
 // `text-davinci-003` deprecated on Jan 4 2024
 // https://stackoverflow.com/questions/78504532/openai-api-error-how-do-i-fix-error-404-when-i-connect-whatsapp-chatbot-to-open
 // model list
 // https://platform.openai.com/docs/models
 // https://community.openai.com/t/models-supported-by-completion-api/363298
+
+// completions: https://api.openai.com/v1/completions
+// completion + davinci-002 : SyntaxError: Unterminated string in JSON at position 3062 (line 1 column 3063)
+// completion + babbage-002 : works
+// completion + gpt-3.5-turbo-instruct: works
+// completion + new models : 404
+
+
+// chat completions: https://api.openai.com/v1/chat/completions
+// chat completion + gpt-4o-mini : 400
+
+
 const DEFAULT_PARAMS = {
-  "model": 'gpt-4o-mini',
+  "model": 'gpt-3.5-turbo-instruct',
   "temperature": 0.3,
   "max_tokens": 800,
   "top_p": 1,
@@ -142,11 +156,14 @@ function App() {
         fetch('https://api.openai.com/v1/completions', requestOptions)
           .then(response => {
             if (!response.ok) {
+              console.log('Error Response:', response.status, response.statusText);
               switch (response.status) {
                 case 401: // 401: Unauthorized: API key is wrong
                   throw new Error('Please double-check your API key.');
                 case 429: // 429: Too Many Requests: Need to pay
                   throw new Error('You exceeded your current quota, please check your plan and billing details.');
+                case 404: // 404: Not Found
+                  throw new Error('404 Error: The specified resource could not be found')
                 default:
                   throw new Error('Something went wrong with the request, please check the Network log');
               }
